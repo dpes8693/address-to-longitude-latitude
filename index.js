@@ -14,6 +14,7 @@ const getSingleData = async (addressName) => {
 getSingleData("台北市士林區中山北路六段197號").then((newData) => {
   console.log(newData);
 });
+
 /** 結果1
 C:\Users\hyo > node .\index.js
 已獲取圖片網址: https://geo0.ggpht.com/cbk?cb_client=maps_sv.tactile&output=thumbnail&thumb=2&panoid=4vwzU1vf9ScZ9cPTEqqifQ&w=256&h=256&yaw=319&pitch=0&thumbfov=75&ll=25.107927,121.525071 
@@ -72,7 +73,9 @@ async function addressToLongLan(addressName) {
 
 // 爬蟲
 async function getGoogleMapHTML(addressName) {
-  const url = `https://www.google.com/maps/place/${encodeURI(addressName)}`;
+  let url = `https://www.google.com/maps/place/${encodeURI(addressName)}`;
+  // 排除"(" 因為google會轉到空地點
+  if (url.indexOf("(") > -1) url = url.split("(")[0];
   const res = await axios.get(url, {
     headers,
     params: {
@@ -96,9 +99,10 @@ function getCoordinates(html, addressName) {
   const ok = mapImg.indexOf("http") > -1 ? mapImg : "https:" + mapImg;
   console.log("已獲取圖片網址:", ok, "\n");
   const googleMapURL = new URL(ok);
-
-  // 
-  let flag = googleMapURL.searchParams.get("ll") || "無法取得";
+  let flag =
+    googleMapURL.searchParams.get("ll") ||
+    googleMapURL.searchParams.get("center") ||
+    "無法取得";
   const coordinates = flag.split(",");
   return { coordinates, addressName };
 }

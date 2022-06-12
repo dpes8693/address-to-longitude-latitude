@@ -33,7 +33,9 @@ async function addressToLongLan(addressName) {
 
 // 爬蟲
 async function getGoogleMapHTML(addressName) {
-  const url = `https://www.google.com/maps/place/${encodeURI(addressName)}`;
+  let url = `https://www.google.com/maps/place/${encodeURI(addressName)}`;
+  // 排除"(" 因為google會轉到空地點
+  if (url.indexOf("(") > -1) url = url.split("(")[0];
   const res = await axios.get(url, {
     headers,
     params: {
@@ -57,9 +59,10 @@ function getCoordinates(html, addressName) {
   const ok = mapImg.indexOf("http") > -1 ? mapImg : "https:" + mapImg;
   console.log("已獲取圖片網址:", ok, "\n");
   const googleMapURL = new URL(ok);
-  
-  // 
-  let flag = googleMapURL.searchParams.get("ll") || "無法取得";
+  let flag =
+    googleMapURL.searchParams.get("ll") ||
+    googleMapURL.searchParams.get("center") ||
+    "無法取得";
   const coordinates = flag.split(",");
   return { coordinates, addressName };
 }
