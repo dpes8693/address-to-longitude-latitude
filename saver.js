@@ -33,9 +33,11 @@ async function addressToLongLan(addressName) {
 
 // 爬蟲
 async function getGoogleMapHTML(addressName) {
+  // 排除不是"號"結尾的狀況
+  const charAt = addressName.lastIndexOf("號");
+  if (charAt > -1) addressName = addressName.substring(0, charAt + 1);
+
   let url = `https://www.google.com/maps/place/${encodeURI(addressName)}`;
-  // 排除"(" 因為google會轉到空地點
-  if (url.indexOf("(") > -1) url = url.split("(")[0];
   const res = await axios.get(url, {
     headers,
     params: {

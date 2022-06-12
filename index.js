@@ -11,10 +11,10 @@ let headers = {
 const getSingleData = async (addressName) => {
   return await addressToLongLan(addressName);
 };
+
 getSingleData("台北市士林區中山北路六段197號").then((newData) => {
   console.log(newData);
 });
-
 /** 結果1
 C:\Users\hyo > node .\index.js
 已獲取圖片網址: https://geo0.ggpht.com/cbk?cb_client=maps_sv.tactile&output=thumbnail&thumb=2&panoid=4vwzU1vf9ScZ9cPTEqqifQ&w=256&h=256&yaw=319&pitch=0&thumbfov=75&ll=25.107927,121.525071 
@@ -73,9 +73,11 @@ async function addressToLongLan(addressName) {
 
 // 爬蟲
 async function getGoogleMapHTML(addressName) {
+  // 排除不是"號"結尾的狀況
+  const charAt = addressName.lastIndexOf("號");
+  if (charAt > -1) addressName = addressName.substring(0, charAt + 1);
+
   let url = `https://www.google.com/maps/place/${encodeURI(addressName)}`;
-  // 排除"(" 因為google會轉到空地點
-  if (url.indexOf("(") > -1) url = url.split("(")[0];
   const res = await axios.get(url, {
     headers,
     params: {
