@@ -16,6 +16,7 @@
 
 ## 如何使用?
 
+⚠️ 目前測試[{} x 50] 五十個物件以下不會被 google 阻擋爬蟲;若超過很容易被阻擋 ⚠️
 ⚠️ 地址最後面不是"號"會抓不到，所以程式只會抓最後一個號做判斷。若後面很多"號"會出現異常! ⚠️
 
 0. 安裝 Nodejs 環境
@@ -59,8 +60,9 @@
 '台北市士林區中山北路六段197號'
 ⬇️
 {
-  coordinates: [ '25.107927', '121.525071' ],
-  addressName: '台北市士林區中山北路六段197號'
+  index: 0,
+  addressName: '台北市士林區中山北路六段197號',
+  coordinates: [ '25.107927', '121.525071' ]
 }
 ```
 
@@ -74,16 +76,19 @@
 ⬇️
 [
   {
-    coordinates: [ '25.107927', '121.525071' ],
-    addressName: '台北市士林區中山北路六段197號'
+    index: 0,
+    addressName: '台北市士林區中山北路六段197號',
+    coordinates: [ '25.107927', '121.525071' ]
   },
   {
-    coordinates: [ '25.064556', '121.521755' ],
-    addressName: '台北市中山區中山北路三段22號'
+    index: 1,
+    addressName: '台北市中山區中山北路三段22號',
+    coordinates: [ '25.064556', '121.521755' ]
   },
   {
-    coordinates: [ '25.030675', '121.549010' ],
-    addressName: '台北市大安區敦化南路二段69號'
+    index: 2,
+    addressName: '台北市大安區敦化南路二段69號',
+    coordinates: [ '25.030675', '121.549010' ]
   }
 ]
 ```
@@ -101,6 +106,35 @@
 ⬇️
 `地址轉經緯度檔案.json`
 ⬇️
-[{"coordinates":["25.107927","121.525071"],"addressName":"台北市士林區中山北路六段197號"},{"coordinates":["25.064556","121.521755"],"addressName":"台北市中山區中山北路三段22號"},{"coordinates":["25.030675","121.549010"],"addressName":"台北市大安區敦化南路二段69號"}]
+[{"index":0,"addressName":"台北市士林區中山北路六段197號","coordinates":["25.107927","121.525071"]},{"index":1,"addressName":"台北市中山區中山北路三段22號","coordinates":["25.064556","121.521755"]},{"index":2,"addressName":"台北市大安區敦化南路二段69號","coordinates":["25.030675","121.549010"]}]
 
 ```
+
+## 參數
+
+- addressToLongLan(addressName, index = 0)
+
+  - `主程式`
+  - 地址名稱;<string>
+  - map 迴圈的 index;<int>
+  - return { index, addressName, coordinates }
+
+- getGoogleMapHTML(addressName)
+
+  - `打 api 拿 html (拿來爬蟲)`
+  - 地址名稱;<string>
+  - return html
+
+- getCoordinates(index, html, addressName)
+
+  - `爬蟲抓<meta>裡面的資料去拿經緯度`
+  - map 迴圈的 index;<int>
+  - 爬蟲取得的 html;<html>
+  - 地址名稱;<string>
+  - return { index, addressName, coordinates }
+
+- saveFile(myFileName, writeData)
+  - `存檔.json`
+  - 檔案名稱;<string>
+  - 資料;<JSON.stringify([])>
+  - no return

@@ -8,14 +8,25 @@ let headers = {
 };
 
 // 寫入檔案範例
-
 const myData = [
   "台北市士林區中山北路六段197號",
   "台北市中山區中山北路三段22號",
   "台北市大安區敦化南路二段69號",
 ];
+
 const getData = async (addressArray) => {
-  return Promise.all(addressArray.map((item) => addressToLongLan(item)));
+  let counter = 0;
+  try {
+    return Promise.all(
+      addressArray.map((item, index) => {
+        counter++;
+        return addressToLongLan(item, index);
+      })
+    );
+  } catch (err) {
+    console.log(arr);
+    return { counter };
+  }
 };
 getData(myData)
   .then((newData) => {
@@ -23,11 +34,13 @@ getData(myData)
   })
   // 拿到資料後執行存檔
   .then((writeData) => saveFile("地址轉經緯度檔案.json", writeData));
+//[{"index":0,"addressName":"台北市士林區中山北路六段197號","coordinates":["25.107927","121.525071"]},{"index":1,"addressName":"台北市中山區中山北路三段22號","coordinates":["25.064556","121.521755"]},{"index":2,"addressName":"台北市大安區敦化南路二段69號","coordinates":["25.030675","121.549010"]}]
 
 // 主程式
-async function addressToLongLan(addressName) {
+async function addressToLongLan(addressName, index = 0) {
   const html = await getGoogleMapHTML(addressName);
-  const coordinates = getCoordinates(html, addressName);
+  console.log(index);
+  const coordinates = getCoordinates(index, html, addressName);
   return coordinates;
 }
 
@@ -52,7 +65,7 @@ async function getGoogleMapHTML(addressName) {
 }
 
 // 資料處理
-function getCoordinates(html, addressName) {
+function getCoordinates(index, html, addressName) {
   const $ = cheerio.load(html);
   // 爬蟲抓到圖片(裡面有經緯度)
   const mapImg = $('meta[property="og:image"]').attr("content");
@@ -66,7 +79,7 @@ function getCoordinates(html, addressName) {
     googleMapURL.searchParams.get("center") ||
     "無法取得";
   const coordinates = flag.split(",");
-  return { coordinates, addressName };
+  return { index, addressName, coordinates };
 }
 
 // 存檔
