@@ -27,17 +27,17 @@ C:\Users\hyo > node .\index.js
 // ======================== 範例2
 // 示範 [地址1,地址2,地址3]  =>  [{經緯度1,地址1},{經緯度2,地址2},{經緯度3,地址3}]
 
-const myData = [
-  "台北市士林區中山北路六段197號",
-  "台北市中山區中山北路三段22號",
-  "台北市大安區敦化南路二段69號",
-];
-const getData = async (addressArray) => {
-  return Promise.all(addressArray.map((item) => addressToLongLan(item)));
-};
-getData(myData).then((newData) => {
-  console.log(newData);
-});
+// const myData = [
+//   "台北市士林區中山北路六段197號",
+//   "台北市中山區中山北路三段22號",
+//   "台北市大安區敦化南路二段69號",
+// ];
+// const getData = async (addressArray) => {
+//   return Promise.all(addressArray.map((item) => addressToLongLan(item)));
+// };
+// getData(myData).then((newData) => {
+//   console.log(newData);
+// });
 
 /** 結果2
 C:\Users\hyo > node .\index.js
@@ -91,8 +91,14 @@ function getCoordinates(html, addressName) {
   const $ = cheerio.load(html);
   // 爬蟲抓到圖片(裡面有經緯度)
   const mapImg = $('meta[property="og:image"]').attr("content");
-  console.log("已獲取圖片網址:", "https:" + mapImg, "\n");
-  const googleMapURL = new URL("https:" + mapImg);
-  const coordinates = googleMapURL.searchParams.get("ll").split(",");
+
+  // 判斷http
+  const ok = mapImg.indexOf("http") > -1 ? mapImg : "https:" + mapImg;
+  console.log("已獲取圖片網址:", ok, "\n");
+  const googleMapURL = new URL(ok);
+
+  // 
+  let flag = googleMapURL.searchParams.get("ll") || "無法取得";
+  const coordinates = flag.split(",");
   return { coordinates, addressName };
 }

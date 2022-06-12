@@ -1,6 +1,8 @@
 # address-to-longitude-latitude
 
-將地址轉換經緯度 (透過 node.js 爬 google map)
+將地址轉換經緯度 (透過 node.js 爬 google map，抓<meta>裡面的 og:image 網址，取得經緯度)
+
+若地址不完整會導致拿不到經緯度!!
 
 ⚠️ 需要安裝 node.js⚠️ [下載網址](https://nodejs.org/zh-tw/download/)
 
@@ -22,6 +24,7 @@
 共有兩個檔案，👍 內附範例建議執行一次知道才轉換資料的格式 👍
 
 3. 以上都完成後，根據開發者需求自行去寫組合的 js 程式就可組合出類似下面的 json 檔案
+
 ```js
 [
     {
@@ -44,7 +47,6 @@
     }
 ]
 ```
-
 
 ### index.js
 
